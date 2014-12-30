@@ -1,0 +1,211 @@
+@bookmarkIconColor:      #777777;
+@bookmarkIconHoverColor: #333333;
+@bookmarkIconBg:         #ffffff;
+@bookmarkHeaderBg:       #ffffff;
+@bookmarkItemBorderTop:  #ffffff;
+@bookmarkItemHoverBg:    #eeeeee;
+@bookmarkEmptyColor:     #777777;
+
+.leaflet-right .leaflet-bookmarks-control {
+		margin-top: 18px;
+		margin-right: 18px;
+
+		// bookmark added animation
+		&.bookmark-added-anim {
+				margin-top: 14px;
+				margin-right: 14px;
+				padding: 12px;
+		}
+}
+
+.leaflet-bookmarks-control {
+		background: @bookmarkIconBg;
+		padding: 8px;
+		cursor: pointer;
+		transition: margin 0.15s ease-out, padding 0.15s ease-out;
+		-webkit-transition: margin 0.15s ease-out, padding 0.15s ease-out;
+
+		.bookmarks-icon-wrapper {
+				padding: 0 3px 0 3px;
+				position: relative;
+		}
+
+		.bookmarks-icon {
+
+				width: 1em;
+				height: 0.8em;
+				background: @bookmarkIconColor;
+
+				&,
+				&:before,
+				&:after {
+						display: inline-block;
+						cursor: pointer;
+						position: relative;
+						content: '';
+						margin: 0;
+				}
+
+				&:before,
+				&:after {
+						margin-top: 0.8em;
+						position: relative;
+						width: 0;
+						height: 0;
+						border-top: 0.5em solid @bookmarkIconColor;
+				}
+
+				&:before {
+						border-right: 0.5em solid transparent;
+				}
+
+				&:after {
+						border-left: 0.5em solid transparent;
+				}
+		}
+
+		&:hover,
+		&:active {
+
+				.bookmarks-icon {
+						background: @bookmarkIconHoverColor;
+
+						&:before,
+						&:after {
+								border-top-color: @bookmarkIconHoverColor;
+						}
+				}
+		}
+
+		.bookmarks-header {
+				height: 1.25em;
+		}
+
+		.bookmarks-list-wrapper {
+				overflow-y: auto;
+				margin-top: -1.25em;
+				padding-top: 1.25em;
+		}
+
+		.bookmarks-list {
+				display: none;
+				list-style: none;
+				margin: 0;
+				padding: 0;
+
+				.bookmark-item {
+						cursor: pointer;
+						transition: opacity 0.25s linear;
+						-webkit-transition: opacity 0.25s linear;
+						padding: 5px;
+						border-bottom: 1px solid @bookmarkItemHoverBg;
+
+						&:hover {
+								background: @bookmarkItemHoverBg;
+								border-bottom: 1px solid @bookmarkItemHoverBg;
+
+								.bookmark-name {
+										text-decoration: underline;
+								}
+
+								.bookmark-remove {
+										opacity: 0.6;
+										filter: alpha(opacity=60);
+								}
+						}
+
+						&:last-child {
+								&, &:hover { border-bottom: none; }
+						}
+
+						&.bookmarks-empty {
+								font-style: italic;
+								color: @bookmarkEmptyColor;
+
+								&, &:hover {
+										background: none;
+										border: none;
+								}
+						}
+				}
+
+				.bookmark-remove {
+						display: inline-block;
+						float: right;
+						margin-left: 6px;
+						font-size: 1.5em;
+						color: @bookmarkIconColor;
+						opacity: 0;
+						filter: alpha(opacity=0);
+						transition: opacity 0.15s linear;
+						-webkit-transition: opacity 0.15s linear;
+
+						&:hover {
+								color: @bookmarkIconHoverColor;
+								opacity: 1;
+								filter: alpha(opacity=100);
+						}
+				}
+
+				.bookmark-name,
+				.bookmark-coords { display: block; }
+
+				.bookmark-name {
+						font-weight: bold;
+				}
+		}
+
+		// list expanded
+		&.expanded {
+				min-width: 180px;
+
+				.bookmarks-icon-wrapper {
+						background: @bookmarkHeaderBg;
+						padding: 4px 3px 0.25em 7px;
+						border-radius: 0 0 0 4px;
+						position: relative;
+				}
+
+				.bookmarks-header {
+						background: @bookmarkHeaderBg;
+						text-align: right;
+				}
+
+				.bookmarks-list-wrapper {
+						padding-top: 1.75em;
+				}
+
+				.bookmarks-list {
+						display: block;
+				}
+		}
+}
+
+.leaflet-bookmarks-form {
+		padding-top: 10px;
+
+		.leaflet-bookmarks-form-input {
+
+				&, &:focus {
+						outline-color: transparent;
+						outline-style: none;
+				}
+
+				padding-left: 5px;
+				padding-right: 5px;
+				line-height: 17px;
+		}
+
+		.leaflet-bookmarks-form-submit {
+				border: 0;
+				font-size: 15px;
+				font-weight: bold;
+				margin: 0 0 -2px -2px;
+				position: relative;
+				top: 1px;
+		}
+
+		.leaflet-bookmarks-form-coords {
+				margin-top: 8px;
+		}
+}

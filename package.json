@@ -1,0 +1,44 @@
+{
+  "name": "leaflet-linestring-select",
+  "version": "0.0.1",
+  "description": "LineString selection tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests yet\" && exit 1",
+    "start": "npm run watch-js & npm run watch-css & serve -p 3001",
+    "watch-css": "catw -c 'lessc -' 'src/*.less' -o dist/leaflet.lss.css -v",
+    "watch-js": "watchify -v -d examples/app.js -o examples/bundle.js",
+    "build-less": "lessc src/leaflet.lss.less > dist/leaflet.lss.css",
+    "compress-less": "lessc -x src/leaflet.lss.less > dist/leaflet.lss.min.css",
+    "build-css": "npm run build-less && npm run compress-less",
+    "build-js": "browserify -s L.Control.LineStringSelect -u leaflet index.js -o dist/L.Control.LineStringSelect.js",
+    "compress": "browserify -s L.Control.LineStringSelect -u leaflet index.js | uglifyjs --comments -m -c drop_console=true,warnings=false > dist/L.Control.LineStringSelect.min.js",
+    "build": "npm run build-js && npm run compress && npm run build-css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w8r/L.Control.LineStringSelect.git"
+  },
+  "keywords": [
+    "leaflet",
+    "geojson",
+    "linestring",
+    "select",
+    "control",
+    "range"
+  ],
+  "author": "Alexander Milevski <info@w8r.name>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/w8r/L.Control.LineStringSelect/issues"
+  },
+  "homepage": "https://github.com/w8r/L.Control.LineStringSelect",
+  "devDependencies": {
+    "less": "^2.1.2",
+    "serve": "^1.4.0",
+    "watchify": "^2.2.1"
+  },
+  "dependencies": {
+    "leaflet": "^0.7.3"
+  }
+}

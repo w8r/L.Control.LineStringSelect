@@ -1,0 +1,9 @@
+/**
+ * Leaflet bookmarks plugin
+ * @license MIT
+ * @author Alexander Milevski <info@w8r.name>
+ * @preserve
+ */
+var L = global.L || require('leaflet');
+
+L.Control.LineStringSelect = module.exports = require('./src/select');
