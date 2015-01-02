@@ -1,3 +1,206 @@
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var n;"undefined"!=typeof window?n=window:"undefined"!=typeof global?n=global:"undefined"!=typeof self&&(n=self);var o=n;o=o.L||(o.L={}),o=o.Control||(o.Control={}),o.LineStringSelect=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+/**
+ * Leaflet LineString selection control
+ * @license MIT
+ * @author Alexander Milevski <info@w8r.name>
+ * @preserve
+ */
+var L = global.L || require('leaflet');
+
+L.Control.LineStringSelect = module.exports = require('./src/select');
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./src/select":5,"leaflet":undefined}],2:[function(require,module,exports){
+"use strict";
+
+var Marker = require('./marker');
+
+/**
+ * Selection endpoint
+ *
+ * @class  EndPoint
+ * @extends {Marker}
+ */
+var Endpoint = Marker.extend( /** @lends Endpoint.prototype */ {
+
+  /**
+   * @type {Object}
+   */
+  options: {
+    /**
+     * Grow marker by this ratio on mouseover
+     * @type {Number}
+     */
+    radiusRatio: 1.2
+  },
+
+  /**
+   * @param  {L.Map} map
+   */
+  onAdd: function(map) {
+    this.on('mouseover', this._onMouseOver, this)
+      .on('mouseout', this._onMouseOut, this);
+    Marker.prototype.onAdd.call(this, map);
+  },
+
+  /**
+   * @param  {L.Map} map
+   */
+  onRemove: function(map) {
+    this.off('mouseover', this._onMouseOver, this)
+      .off('mouseout', this._onMouseOut, this);
+    Marker.prototype.onRemove.call(this, map);
+  },
+
+  /**
+   * Grow radius
+   */
+  _onMouseOver: function() {
+    this.setRadius(this.options.radius * this.options.radiusRatio);
+  },
+
+  /**
+   * Set radius back
+   */
+  _onMouseOut: function() {
+    this.setRadius(this.options.radius / this.options.radiusRatio);
+  }
+
+});
+
+module.exports = Endpoint;
+
+},{"./marker":4}],3:[function(require,module,exports){
+"use strict";
+
+/**
+ * Squared distance
+ * @param  {Array.<Number>} a
+ * @param  {Array.<Number>} b
+ * @return {Number}
+ */
+function pointDistance(a, b) {
+  var dx = a[0] - b[0],
+    dy = a[1] - b[1];
+  return dx * dx + dy * dy;
+}
+
+/**
+ * @param  {Array.<Number>} c The point
+ * @param  {Array.<Number>} a Endpoint 1
+ * @param  {Array.<Number>} b Endpoint 2
+ * @return {Number}
+ */
+function pointLineSegmentDistance(c, a, b) {
+  var dx = b[0] - a[0],
+    dy = b[1] - a[1],
+    d2 = dx * dx + dy * dy,
+    t = d2 && ((c[0] - a[0]) * dx + (c[1] - a[1]) * (b[1] - a[1])) / d2;
+  return pointDistance(c, t <= 0 ? a : t >= 1 ? b : [a[0] + t * dx, a[1] + t * dy]);
+}
+
+/**
+ * @param  {Array.<Number>} p2
+ * @param  {Array.<Number>} p0
+ * @param  {Array.<Number>} p1
+ * @return {Number}
+ */
+function pointLineSegmentParameter(p2, p0, p1) {
+  var x10 = p1[0] - p0[0],
+    y10 = p1[1] - p0[1],
+    x20 = p2[0] - p0[0],
+    y20 = p2[1] - p0[1];
+  return (x20 * x10 + y20 * y10) / (x10 * x10 + y10 * y10);
+}
+
+/**
+ * @param  {Array.<Number>} p2 Point
+ * @param  {Array.<Number>} p0 Segment start
+ * @param  {Array.<Number>} p1 Segment end
+ * @return {Array.<Number>} Closest point/projection
+ */
+function closestPointOnSegment(p2, p0, p1) {
+  var t = pointLineSegmentParameter(p2, p0, p1),
+    x10 = p1[0] - p0[0],
+    y10 = p1[1] - p0[1],
+    p3 = [p0[0] + t * x10, p0[1] + t * y10];
+  return p3;
+}
+
+/**
+ * Performs linear interpolation between values a and b. Returns the value
+ * between a and b proportional to x (when x is between 0 and 1. When x is
+ * outside this range, the return value is a linear extrapolation).
+ *
+ * @param {Number} a A number.
+ * @param {Number} b A number.
+ * @param {Number} x The proportion between a and b.
+ *
+ * @return {Number} The interpolated value between a and b.
+ */
+function linearInterpolation(a, b, x) {
+  return a + x * (b - a);
+}
+
+/**
+ * @param  {Array.<Number>} start
+ * @param  {Array.<Number>} end
+ * @param  {Number}         m
+ * @param  {Number}         length
+ * @return {Array.<Number>}
+ */
+function pointOnSegment(start, end, m, length) {
+  var t = m / length;
+  return [
+    linearInterpolation(start[0], end[0], t),
+    linearInterpolation(start[1], end[1], t)
+  ];
+}
+
+module.exports = {
+  pointSegmentDistance: pointLineSegmentDistance,
+  closestPointOnSegment: closestPointOnSegment,
+  pointOnSegment: pointOnSegment
+};
+
+},{}],4:[function(require,module,exports){
+"use strict";
+
+var L = require('leaflet');
+
+/**
+ * Vector circle marker class with additional hide/show methods
+ *
+ * @class  Marker
+ * @extends {L.CircleMarker}
+ */
+var Marker = L.CircleMarker.extend( /** @lends Marker.prototype */ {
+
+  /**
+   * Show marker
+   * @return {Marker}
+   */
+  show: function() {
+    this._container.style.visibility = '';
+    return this;
+  },
+
+  /**
+   * Hide marker
+   * @return {Marker}
+   */
+  hide: function() {
+    this._container.style.visibility = 'hidden';
+    return this;
+  }
+
+});
+
+module.exports = Marker;
+
+},{"leaflet":undefined}],5:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var L = global.L || require('leaflet');
@@ -667,3 +870,59 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 });
 
 module.exports = Select;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./endpoint":2,"./geometry":3,"./marker":4,"./selection":6,"leaflet":undefined,"rbush":undefined}],6:[function(require,module,exports){
+"use strict";
+
+var L = require('leaflet');
+
+/**
+ * Selection polyline
+ * @class  Selection
+ * @extends {L.Polyline}
+ */
+var Selection = L.Polyline.extend( /** @lends Selection.prototype */ {
+
+  /**
+   * @param  {Array.<L.LatLng>} latlngs
+   * @param  {Object}           options
+   * @param  {L.Polyline}       source
+   * @constructor
+   */
+  initialize: function(latlngs, options, source) {
+
+    /**
+     * @type {L.Polyline}
+     */
+    this._source = source;
+
+    L.Polyline.prototype.initialize.call(this, latlngs, options);
+  },
+
+  /**
+   * Updates path from the source path string, avoid re-projections
+   * 1. get the path chunk from the source, put it all together
+   * 2. get the endpoints from latlng array
+   * 3. update path
+   *
+   * @param  {Number} start
+   * @param  {Number} end
+   */
+  updatePathFromSource: function(start, end) {
+    this._originalPoints = this._source._originalPoints.slice(start, end + 1);
+    this._originalPoints.unshift(
+      this._map.latLngToLayerPoint(this._latlngs[0])
+    );
+    this._originalPoints.push(
+      this._map.latLngToLayerPoint(this._latlngs[this._latlngs.length - 1])
+    );
+    this._updatePath();
+  }
+
+});
+
+module.exports = Selection;
+
+},{"leaflet":undefined}]},{},[1])(1)
+});

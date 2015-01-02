@@ -1,0 +1,48 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+h2, h3 {
+  font-weight: 300;
+}
+
+#map {
+    width: 60%;
+    height: 100%;
+    display: block;
+    float: left;
+}
+
+#controls {
+  display: block;
+  width: 40%;
+  float: right;
+  background: #fff;
+}
+
+#controls .wrapper {
+  padding: 30px;
+}
+
+#controls .control {
+  width: 20%;
+  display: inline-block;
+  text-align: center;
+}
+
+#controls .control.range {
+  width: 33%;
+}
+
+#controls .control input {
+  display: inline-block;
+  margin-right: 10px;
+  text-align: right;
+}
+
+#geojson {
+  display: block;
+  width: 100%;
+  height: 200px;
+}

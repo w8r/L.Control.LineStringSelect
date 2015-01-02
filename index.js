@@ -1,5 +1,5 @@
 /**
- * Leaflet bookmarks plugin
+ * Leaflet LineString selection control
  * @license MIT
  * @author Alexander Milevski <info@w8r.name>
  * @preserve

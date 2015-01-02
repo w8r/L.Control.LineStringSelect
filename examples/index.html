@@ -1,14 +1,43 @@
 <html>
     <head>
-        <title>Leaflet.Bookmarks</title>
+        <title>Leaflet.Control.LineStringSelect</title>
 
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
-        <link rel="stylesheet" href="../bower_components/Leaflet.contextmenu/dist/leaflet.contextmenu.css" />
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="css/topcoat-desktop-light.css" />
+        <link rel="stylesheet" href="css/style.css" />
         <link rel="stylesheet" href="../dist/leaflet.select.ll.css" />
     </head>
     <body>
         <div id="map"></div>
+        <div id="controls">
+          <div class="wrapper">
+            <h2>LineString select</h2>
+            <p>
+              Here you can play with the rough coastline of HK New Territories. Try and select a part of it by putting control points on it, dragging them or using the external control.
+            <p>
+            <div class="control range">
+              <span><input id="start" type="text" class="topcoat-text-input" placeholder="0" /></span>
+              <input disabled type="range" id="start-range" list="positions" value="0" max="1" step="0.01"/>
+            </div>
+            <div class="control range">
+              <span><input id="end" type="text" class="topcoat-text-input" placeholder="0" /></span>
+              <input disabled type="range" id="end-range" list="positions" value="0" max="1" step="0.01"/>
+            </div>
+            <div class="control">
+              <button class="topcoat-button" id="reset">Reset</button>
+            </div>
+            <datalist id="positions">
+              <option>0</option>
+              <option>0.20</option>
+              <option>0.40</option>
+              <option>0.60</option>
+              <option>0.80</option>
+              <option>1</option>
+            </datalist>
+            <h3>GeoJSON</h3>
+            <textarea class="topcoat-textarea" id="geojson"></textarea>
+          </div>
+        <div>
         <script type="text/javascript" src="bundle.js"></script>
     </body>
 </html>
