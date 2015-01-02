@@ -278,10 +278,11 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    * @return {Array.<Number>}
    */
   _pointAtSegmentM: function(start, end, m) {
+    var length = this._distance(start, end);
+
     start = this._getProjectedPoint(start);
     end = this._getProjectedPoint(end);
 
-    var length = this._distance(start, end);
     var coords = geometry.pointOnSegment(start, end, m, length);
     return L.point(coords);
   },

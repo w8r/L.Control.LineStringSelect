@@ -110,9 +110,8 @@ control.on('selection', function() {
   startRange.value = dist1 / length;
   endRange.value = dist2 / length;
 
-  startM.value = parseInt(dist1);
-  endM.value = parseInt(dist2);
-
+  startM.value = Math.round(dist1);
+  endM.value = Math.round(dist2);
 
   endRange.disabled = false;
   textarea.value = jsonFormat(JSON.stringify(control.toGeoJSON()));
