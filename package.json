@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/w8r/L.Control.LineStringSelect",
   "devDependencies": {
+    "catw": "^0.2.0",
     "less": "^2.1.2",
     "serve": "^1.4.0",
     "watchify": "^2.2.1"
