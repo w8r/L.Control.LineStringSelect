@@ -6,7 +6,7 @@ LineString selection tool: you can select a part or a stretch of a polyline on t
 
 ## [Demo](https://w8r.github.io/L.Control.LineStringSelect)
 
-Look how this thing deals with a coastline polyline consisting of 248 points
+Look how this thing deals with a coastline polyline consisting of ~500 points
 
 [demo](https://w8r.github.io/L.Control.LineStringSelect)
 
