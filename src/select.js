@@ -553,7 +553,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
         coords,
         this.options.selectionStyle,
         this._layer
-      ).addTo(map);
+      ).addTo(this._map);
 
       // markers should be above the selection
       this._startMarker.bringToFront();
