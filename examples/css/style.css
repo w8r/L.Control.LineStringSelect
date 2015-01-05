@@ -10,7 +10,7 @@ h2, h3 {
 
 #map {
     width: 60%;
-    height: 100%;
+    height: 500px;
     display: block;
     float: left;
 }
@@ -20,6 +20,10 @@ h2, h3 {
   width: 40%;
   float: right;
   background: #fff;
+}
+
+#map, #controls {
+  width: 100%;
 }
 
 #controls .wrapper {
@@ -48,13 +52,17 @@ h2, h3 {
   height: 200px;
 }
 
-@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2 / 1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 2dppx){
+@media (min-width:900px) {
+  #map {
+    width: 60%;
+    height: 100%;
+  }
 
-  #map, #controls {
-    width: 100%;
+  #controls {
+    width: 40%;
   }
 
   #controls .control.range {
-    display: block;
+    display: inline-block;
   }
 }
