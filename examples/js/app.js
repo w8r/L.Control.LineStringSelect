@@ -1,7 +1,19 @@
 var L = global.L || require('leaflet');
-var data = require('./data.json');
+var data = require('../data.json');
 var jsonFormat = global.jsonFormat = require('./json-format');
-var Select = require('../index');
+var Select = require('../../index');
+require('./L.TouchExtend');
+
+// this piece here doubles the number of points in geojson
+// for (var i = 0, coords = data.geometry.coordinates, len = coords.length - 1; i < len; i += 2) {
+//   var c1 = coords[i];
+//   var c2 = coords[i + 1];
+//   var mid = [(c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2];
+
+//   coords.splice(i + 1, 0, mid);
+//   len++;
+// }
+// console.log(JSON.stringify(coords));
 
 L.Icon.Default.imagePath = "http://cdn.leafletjs.com/leaflet-0.7/images";
 
@@ -115,6 +127,12 @@ control.on('selection', function() {
 
   endRange.disabled = false;
   textarea.value = jsonFormat(JSON.stringify(control.toGeoJSON()));
+});
+
+control.on('reset', function() {
+  startRange.value = endRange.value = 0;
+  endM.value = startM.value = 0;
+  textarea.value = '';
 });
 
 global.getStartDistance = getStartDistance;

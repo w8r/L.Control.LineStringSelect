@@ -1,6 +1,7 @@
 html, body {
     margin: 0;
     padding: 0;
+    background: #fff;
 }
 
 h2, h3 {
@@ -45,4 +46,15 @@ h2, h3 {
   display: block;
   width: 100%;
   height: 200px;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2 / 1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 2dppx){
+
+  #map, #controls {
+    width: 100%;
+  }
+
+  #controls .control.range {
+    display: block;
+  }
 }

@@ -7,7 +7,7 @@
     "test": "echo \"No tests yet\" && exit 1",
     "start": "npm run watch-js & npm run watch-css & serve -p 3001",
     "watch-css": "catw -c 'lessc -' 'src/*.less' -o dist/leaflet.lss.css -v",
-    "watch-js": "watchify -v -d examples/app.js -o examples/bundle.js",
+    "watch-js": "watchify -v -d examples/js/app.js -o examples/js/bundle.js",
     "build-less": "lessc src/leaflet.lss.less > dist/leaflet.lss.css",
     "compress-less": "lessc -x src/leaflet.lss.less > dist/leaflet.lss.min.css",
     "build-css": "npm run build-less && npm run compress-less",

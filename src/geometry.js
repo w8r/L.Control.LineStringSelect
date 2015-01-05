@@ -13,6 +13,15 @@ function pointDistance(a, b) {
 }
 
 /**
+ * @param  {Array.<Number>} a
+ * @param  {Array.<Number>} b
+ * @return {Number}
+ */
+function euclidianDistance(a, b) {
+  return Math.sqrt(pointDistance(a, b));
+}
+
+/**
  * @param  {Array.<Number>} c The point
  * @param  {Array.<Number>} a Endpoint 1
  * @param  {Array.<Number>} b Endpoint 2
@@ -87,5 +96,6 @@ function pointOnSegment(start, end, m, length) {
 module.exports = {
   pointSegmentDistance: pointLineSegmentDistance,
   closestPointOnSegment: closestPointOnSegment,
-  pointOnSegment: pointOnSegment
+  pointOnSegment: pointOnSegment,
+  distance: euclidianDistance
 };
