@@ -676,6 +676,15 @@ function pointDistance(a, b) {
 }
 
 /**
+ * @param  {Array.<Number>} a
+ * @param  {Array.<Number>} b
+ * @return {Number}
+ */
+function euclidianDistance(a, b) {
+  return Math.sqrt(pointDistance(a, b));
+}
+
+/**
  * @param  {Array.<Number>} c The point
  * @param  {Array.<Number>} a Endpoint 1
  * @param  {Array.<Number>} b Endpoint 2
@@ -750,7 +759,8 @@ function pointOnSegment(start, end, m, length) {
 module.exports = {
   pointSegmentDistance: pointLineSegmentDistance,
   closestPointOnSegment: closestPointOnSegment,
-  pointOnSegment: pointOnSegment
+  pointOnSegment: pointOnSegment,
+  distance: euclidianDistance
 };
 
 },{}],5:[function(require,module,exports){
@@ -818,7 +828,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     movingMarkerClass: 'select-marker select-moving-marker',
     name: 'leaflet-linestring-select',
     lineWeight: 4,
-    lineTolerance: 5,
+    lineTolerance: L.Browser.touch ? 10 : 5,
 
     // moving(sliding) marker
     movingMarkerStyle: {
@@ -841,6 +851,8 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       color: '#0ff',
       opacity: 1
     },
+
+    useTouch: L.Browser.touch,
 
     position: 'topright' // chose your own if you want
   },
@@ -910,7 +922,9 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
   /**
    * @param  {L.Map} map
    */
-  onRemove: function(map) {},
+  onRemove: function(map) {
+    this.disable();
+  },
 
   /**
    * Enable selection mode for line string
@@ -927,11 +941,10 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
     this._layer.on('click', this._onLayerClick, this);
 
-    this._map.on('moveend zoomend resize',
-      this._calculatePointerTolerance, this);
-    this._map.on('mousemove', this._onMousemove, this)
-      .on('mousedown', this._onMouseDown, this)
-      .on('click', this._onMapClick, this);
+    this._map.on('moveend zoomend resize', this._calculatePointerTolerance, this)
+      .on('mousemove touchmove', this._onMousemove, this)
+      .on('mousedown touchstart', this._onMouseDown, this)
+      .on('click contextmenu', this._onMapClick, this);
 
     this._calculatePointerTolerance();
 
@@ -950,11 +963,10 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
     this._layer.off('click', this._onLayerClick, this);
 
-    this._map.off('moveend zoomend resize',
-      this._calculatePointerTolerance, this);
-    this._map.off('mousemove', this._onMousemove, this)
-      .off('mousedown', this._onMouseDown, this)
-      .off('click', this._onMapClick, this);
+    this._map.off('moveend zoomend resize', this._calculatePointerTolerance, this)
+      .off('mousemove touchmove', this._onMousemove, this)
+      .off('mousedown touchstart', this._onMouseDown, this)
+      .off('click contextmenu', this._onMapClick, this);
 
     this._feature = null;
     this._layer = null;
@@ -982,7 +994,12 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       this._selection = null;
     }
 
-    this._movingMarker.setLatLng(this._layer.getLatLngs()[0]).show();
+    this._movingMarker.setLatLng(this._layer.getLatLngs()[0]);
+    if (!this.options.useTouch) {
+      this._movingMarker.show();
+    }
+
+    this.fire('reset');
 
     return this;
   },
@@ -1137,6 +1154,10 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
     this._movingMarker = new ControlMarker(pos, style).addTo(this._map);
     this._movingMarker.on('click', this._onMovingMarkerClick, this);
+
+    if (this.options.useTouch) {
+      this._movingMarker.hide();
+    }
   },
 
   /**
@@ -1169,12 +1190,20 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     if (!this._endMarker) {
       var pos = this._map.latLngToLayerPoint(evt.latlng);
       var coords = this._movingMarker.getLatLng();
+
+      if (this.options.useTouch) { // no mousemove, try and moving morker here
+        var nearest = this._getNearestPoint(evt.latlng);
+        if (nearest) {
+          coords = L.latLng(nearest)
+          this._movingMarker.setLatLng(coords);
+        }
+      }
+
       var mPos = this._map.latLngToLayerPoint(coords);
-      var distance = Math.sqrt(Math.pow(pos.x - mPos.x, 2) +
-        Math.pow(pos.y - mPos.y, 2));
+      var distance = geometry.distance([pos.x, pos.y], [mPos.x, mPos.y]);
 
       if (distance <= this.options.lineTolerance * 2) {
-        coords = this._getNearestPoint(coords)
+        coords = this._getNearestPoint(coords);
         this._setPoint(coords, coords.start, coords.end);
       }
     }
@@ -1193,6 +1222,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       //   .on('mouseout', this._movingMarker.show, this._movingMarker);
       this._startMarker.start = start;
       this._startMarker.end = end;
+
       this.fire('select:start', {
         latlng: pos
       });
@@ -1235,6 +1265,29 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    */
   _onMouseDown: function(evt) {
     var target = (evt.originalEvent.target || evt.originalEvent.srcElement);
+
+    if (this.options.useTouch) {
+      var point;
+      if (this._startMarker) {
+        point = this._map.latLngToContainerPoint(this._startMarker.getLatLng());
+        if (geometry.distance(
+            [evt.containerPoint.x, evt.containerPoint.y], [point.x, point.y]
+          ) <= this.options.lineTolerance * 2) {
+          //this._startMarker._onMouseOver();
+          target = this._startMarker._path;
+        }
+      }
+      if (this._endMarker) {
+        point = this._map.latLngToContainerPoint(this._endMarker.getLatLng());
+        if (geometry.distance(
+            [evt.containerPoint.x, evt.containerPoint.y], [point.x, point.y]
+          ) <= this.options.lineTolerance * 2) {
+          //this._endMarker._onMouseOver();
+          target = this._endMarker._path;
+        }
+      }
+    }
+
     if (this._startMarker && this._startMarker._path === target) {
       this._dragging = this._startMarker;
       this._static = this._endMarker;
@@ -1242,6 +1295,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       this._dragging = this._endMarker;
       this._static = this._startMarker;
     }
+
     if (this._dragging) {
       L.DomEvent.stop(evt);
       this._dragging._dragging = true;
@@ -1363,6 +1417,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     //     weight: 2,
     //     fillOpacity: 0
     //   }).addTo(this._map);
+    //   this._m.bringToBack();
     // } else {
     //   this._m.setBounds(coords);
     // }
