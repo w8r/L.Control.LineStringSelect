@@ -22,7 +22,7 @@ Disable control, remove handlers and selection
 Reset selection
 
 `.selectMeters(startMeter, endMeter)`
-Select streatch by meter distances from linestring start. Buggy, needs testing
+Select stretch by meter distances from linestring start.
 
 `.toGeoJSON()`
 Returns selection GeoJSON
