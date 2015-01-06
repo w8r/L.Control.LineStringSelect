@@ -819,6 +819,12 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
   includes: L.Mixin.Events,
 
+  statics: {
+    Selection: Selection,
+    Endpoint: Endpoint,
+    ControlMarker: ControlMarker
+  },
+
   /**
    * @type {Object}
    */
@@ -1051,6 +1057,39 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
   },
 
   /**
+   * Replace this method if you want to subclass moving marker
+   * @param  {L.LatLng} pos
+   * @param  {Object}   style
+   * @return {L.Control.LineStringSelect.ControlMarker}
+   */
+  movingMarkerFactory: function(pos, style) {
+    return new ControlMarker(pos, style);
+  },
+
+  /**
+   * Replace this method if you want to subclass endpoint marker
+   * @param  {L.LatLng} pos
+   * @param  {Object}   style
+   * @param  {Boolean}  isEnd
+   * @return {L.Control.LineStringSelect.Endpoint}
+   */
+  endpointFactory: function(pos, style, isEnd) {
+    return new Endpoint(pos, style);
+  },
+
+  /**
+   * Craetes a selection polyline. Replace or extend if you want
+   * to subclass selection polyline
+   * @param  {Array.<L.LatLng>} coords
+   * @param  {Object}           style
+   * @param  {L.Polyline}       layer
+   * @return {L.Control.LineStringSelect.Selection}
+   */
+  selectionFactory: function(coords, style, layer) {
+    return new Selection(coords, style, layer);
+  },
+
+  /**
    * Calculate distance in meters from one point to another
    *
    * @param  {Array.<Number>} A
@@ -1152,7 +1191,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     style.radius = this.options.lineTolerance;
     style.className = this.options.movingMarkerClass;
 
-    this._movingMarker = new ControlMarker(pos, style).addTo(this._map);
+    this._movingMarker = this.movingMarkerFactory(pos, style).addTo(this._map);
     this._movingMarker.on('click', this._onMovingMarkerClick, this);
 
     if (this.options.useTouch) {
@@ -1217,7 +1256,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     if (!this._startMarker) {
       style.className = this.options.startMarkerClass;
 
-      this._startMarker = new Endpoint(pos, style).addTo(this._map);
+      this._startMarker = this.endpointFactory(pos, style, false).addTo(this._map);
       // this._startMarker.on('mouseover', this._movingMarker.hide, this._movingMarker)
       //   .on('mouseout', this._movingMarker.show, this._movingMarker);
       this._startMarker.start = start;
@@ -1228,7 +1267,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       });
     } else if (!this._endMarker) {
       style.className = this.options.endMarkerClass;
-      this._endMarker = new Endpoint(pos, style).addTo(this._map);
+      this._endMarker = this.endpointFactory(pos, style, true).addTo(this._map);
       // this._endMarker.on('mouseover', this._movingMarker.hide, this._movingMarker)
       //   .on('mouseout', this._movingMarker.show, this._movingMarker);
 
@@ -1351,7 +1390,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     coords.push(this._endMarker.getLatLng());
 
     if (!this._selection) {
-      this._selection = new Selection(
+      this._selection = this.selectionFactory(
         coords,
         this.options.selectionStyle,
         this._layer
