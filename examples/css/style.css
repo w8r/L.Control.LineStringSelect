@@ -36,6 +36,8 @@ h2, h3 {
   text-align: center;
 }
 
+#controls .github-button { color: #fff; }
+
 #controls .control.range {
   width: 33%;
 }

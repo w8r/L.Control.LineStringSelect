@@ -30,6 +30,20 @@ Returns selection GeoJSON
 `.getSelection()`
 Returns array of selection `L.LatLng`s
 
+### Events
+
+`selection`
+Selection changed or finished.
+
+`reset`
+Selection cleared
+
+`select:start : {pos: <L.LatLng>}`
+First point set
+
+`select:end : {pos: <L.LatLng>}`
+Second point set
+
 ## Usage
 
 ```javascript
