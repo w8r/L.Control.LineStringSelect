@@ -1,6 +1,6 @@
 "use strict";
 
-var L = require('leaflet');
+var L = global.L || require('leaflet');
 
 /**
  * Selection polyline

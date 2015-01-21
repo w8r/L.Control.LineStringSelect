@@ -1,7 +1,7 @@
-var L = global.L || require('leaflet');
+// var L = global.L || require('leaflet');
 var data = require('../data.json');
 var jsonFormat = global.jsonFormat = require('./json-format');
-var Select = require('../../index');
+//var Select = require('../../index');
 require('./L.TouchExtend');
 
 // this piece here doubles the number of points in geojson

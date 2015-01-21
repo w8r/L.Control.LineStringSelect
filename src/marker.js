@@ -1,6 +1,6 @@
 "use strict";
 
-var L = require('leaflet');
+var L = global.L || require('leaflet');
 
 /**
  * Vector circle marker class with additional hide/show methods

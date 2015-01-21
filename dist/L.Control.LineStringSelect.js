@@ -6,6 +6,7 @@
  * @author Alexander Milevski <info@w8r.name>
  * @preserve
  */
+
 var L = global.L || require('leaflet');
 
 L.Control.LineStringSelect = module.exports = require('./src/select');
@@ -764,9 +765,10 @@ module.exports = {
 };
 
 },{}],5:[function(require,module,exports){
+(function (global){
 "use strict";
 
-var L = require('leaflet');
+var L = global.L || require('leaflet');
 
 /**
  * Vector circle marker class with additional hide/show methods
@@ -798,6 +800,7 @@ var Marker = L.CircleMarker.extend( /** @lends Marker.prototype */ {
 
 module.exports = Marker;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"leaflet":undefined}],6:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -934,12 +937,14 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
   /**
    * Enable selection mode for line string
-   * @param  {Object} options
+   * @param  {Object}     options
+   * @param  {L.Polyline} options.layer
+   * @param  {Object}     options.feature
    * @return {Select}
    */
   enable: function(options) {
-    this._layer = options.layer;
-    this._feature = options.feature || options.layer.toGeoJSON();
+    this._layer = options['layer'];
+    this._feature = options['feature'] || options['layer'].toGeoJSON();
 
     this._createHandles();
 
@@ -1210,7 +1215,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
   /**
    * No moving marker on touch device
-   * @param  {Object} evt
+   * @param  {L.MouseEvent}   evt
    */
   _onLayerClick: function(evt) {
     var coords = this._getNearestPoint(evt.latlng);
@@ -1223,7 +1228,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
   /**
    * Map clicked, if near the moving point - set endpoint
-   * @param  {Object} evt
+   * @param  {L.MouseEvent} evt
    */
   _onMapClick: function(evt) {
     if (!this._endMarker) {
@@ -1303,7 +1308,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    * @param  {Object} evt
    */
   _onMouseDown: function(evt) {
-    var target = (evt.originalEvent.target || evt.originalEvent.srcElement);
+    var target = (evt['originalEvent'].target || evt['originalEvent'].srcElement);
 
     if (this.options.useTouch) {
       var point;
@@ -1345,7 +1350,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
   /**
    * Clears drag handlers
-   * @param  {Object} evt
+   * @param  {L.MouseEvent} evt
    */
   _stopHandlerDrag: function(evt) {
     if (this._dragging) {
@@ -1412,7 +1417,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
   /**
    * Mouse move: follow the path with the moving marker or drag
    *
-   * @param  {Object} evt
+   * @param  {L.MouseEvent} evt
    */
   _onMousemove: function(evt) {
     var coords = this._getNearestPoint(evt.latlng);
@@ -1557,9 +1562,10 @@ module.exports = Select;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./endpoint":3,"./geometry":4,"./marker":5,"./selection":7,"leaflet":undefined,"rbush":2}],7:[function(require,module,exports){
+(function (global){
 "use strict";
 
-var L = require('leaflet');
+var L = global.L || require('leaflet');
 
 /**
  * Selection polyline
@@ -1608,5 +1614,6 @@ var Selection = L.Polyline.extend( /** @lends Selection.prototype */ {
 
 module.exports = Selection;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"leaflet":undefined}]},{},[1])(1)
 });
