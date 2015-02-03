@@ -722,6 +722,14 @@ L.MouseEvent = {
   originalEvent: undefined
 };
 
+L.Draggable = function() {};
+
+L.Draggable.START = null;
+L.Draggable.END = null;
+L.Draggable.MOVE = null;
+
+L.Draggable._disabled = false;
+
 L.LatLng.prototype.distanceTo = function() {};
 
 L.LatLng.prototype.lat;

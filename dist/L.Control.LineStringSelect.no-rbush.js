@@ -365,7 +365,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
     this._map.on('moveend zoomend resize', this._calculatePointerTolerance, this)
       .on('mousemove touchmove', this._onMousemove, this)
-      .on('mousedown touchstart', this._onMouseDown, this)
+      .on(L.Draggable.START.join(' '), this._onMouseDown, this)
       .on('click contextmenu', this._onMapClick, this);
 
     this._calculatePointerTolerance();
@@ -387,7 +387,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
     this._map.off('moveend zoomend resize', this._calculatePointerTolerance, this)
       .off('mousemove touchmove', this._onMousemove, this)
-      .off('mousedown touchstart', this._onMouseDown, this)
+      .off(L.Draggable.START.join(' '), this._onMouseDown, this)
       .off('click contextmenu', this._onMapClick, this);
 
     this._feature = null;
@@ -754,7 +754,10 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     if (this._dragging) {
       L.DomEvent.stop(evt);
       this._dragging._dragging = true;
+
+      L.Draggable._disabled = true;
       this._map.dragging.disable();
+
       this._map.once('mouseup', this._stopHandlerDrag, this);
     }
   },
@@ -766,7 +769,10 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
   _stopHandlerDrag: function(evt) {
     if (this._dragging) {
       global.clearTimeout(this._dragTimer);
+
+      L.Draggable._disabled = false;
       this._map.dragging.enable();
+
       this._dragging._dragging = null;
       this._dragging = null;
       this._onDragStopped(this._dragging, evt.latlng);
