@@ -479,7 +479,9 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       this.fire('select:end', {
         latlng: pos
       });
-      this._onSelect();
+      if (this._startMarker && this._endMarker) {
+        this._onSelect();
+      }
     }
   },
 
@@ -568,7 +570,9 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    * @param  {L.LatLng} coords
    */
   _onDragStopped: function(handle, coords) {
-    this._onSelect();
+    if (this._startMarker && this._endMarker) {
+      this._onSelect();
+    }
   },
 
   /**
