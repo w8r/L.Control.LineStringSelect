@@ -45,8 +45,10 @@ function pointLineSegmentParameter(p2, p0, p1) {
   var x10 = p1[0] - p0[0],
     y10 = p1[1] - p0[1],
     x20 = p2[0] - p0[0],
-    y20 = p2[1] - p0[1];
-  return (x20 * x10 + y20 * y10) / (x10 * x10 + y10 * y10);
+    y20 = p2[1] - p0[1],
+    t = (x20 * x10 + y20 * y10) / (x10 * x10 + y10 * y10);
+	t<0&&(t=0),t>1&&(t=1);
+  return t;
 }
 
 /**
