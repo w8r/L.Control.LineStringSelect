@@ -12,8 +12,8 @@
     "build-less": "lessc src/leaflet.lss.less > dist/leaflet.lss.css",
     "compress-less": "lessc -x src/leaflet.lss.less > dist/leaflet.lss.min.css",
     "build-css": "npm run build-less && npm run compress-less",
-    "build-js": "browserify -s L.Control.LineStringSelect --external leaflet index.js -o dist/L.Control.LineStringSelect.js",
-    "build-js-no-rbush": "browserify -s L.Control.LineStringSelect --external leaflet -u leaflet -u rbush index.js -o dist/L.Control.LineStringSelect.no-rbush.js",
+    "build-js": "browserify -t [ browserify-shim ] -s L.Control.LineStringSelect --external leaflet index.js -o dist/L.Control.LineStringSelect.js",
+    "build-js-no-rbush": "browserify -t [ browserify-shim ] -s L.Control.LineStringSelect --external leaflet -u leaflet -u rbush index.js -o dist/L.Control.LineStringSelect.no-rbush.js",
     "compress": "npm run compress-js && npm run compress-js-no-rbush",
     "compress-js": "uglifyjs dist/L.Control.LineStringSelect.js --comments -m -c drop_console=true,warnings=false > dist/L.Control.LineStringSelect.min.js",
     "compress-js-no-rbush": "uglifyjs dist/L.Control.LineStringSelect.no-rbush.js --comments -m -c drop_console=true,warnings=false > dist/L.Control.LineStringSelect.no-rbush.min.js",
@@ -33,11 +33,6 @@
   ],
   "author": "Alexander Milevski <info@w8r.name>",
   "license": "MIT",
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
   "browserify-shim": {
     "leaflet": "global:L"
   },

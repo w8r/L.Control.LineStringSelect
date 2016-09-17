@@ -2,7 +2,7 @@ SOURCES  = dist/L.Control.LineStringSelect.js dist/L.Control.LineStringSelect.no
 COMPILED = dist/L.Control.LineStringSelect.min.js dist/L.Control.LineStringSelect.no-rbush.min.js
 QS       = compilation_level=ADVANCED_OPTIMIZATIONS&output_format=text
 URL      = http://closure-compiler.appspot.com/compile
-BROWSERIFY = ./node_modules/.bin/browserify
+BROWSERIFY = ./node_modules/.bin/browserify -t [ browserify-shim ]
 
 all: clean sources compile
 
