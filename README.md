@@ -1,4 +1,4 @@
-# L.Control.LineStringSelect
+# L.Control.LineStringSelect [![npm version](https://badge.fury.io/js/leaflet-linestring-select.svg)](https://badge.fury.io/js/leaflet-linestring-select) [![CircleCI](https://circleci.com/gh/w8r/L.Control.LineStringSelect.svg?style=shield)](https://circleci.com/gh/w8r/L.Control.LineStringSelect)
 
 ![Screenshot](http://s16.postimg.org/c1f3efm1h/lss.jpg)
 
