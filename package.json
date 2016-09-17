@@ -1,6 +1,6 @@
 {
   "name": "leaflet-linestring-select",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "LineString selection tool",
   "main": "index.js",
   "scripts": {
@@ -34,7 +34,9 @@
   "author": "Alexander Milevski <info@w8r.name>",
   "license": "MIT",
   "browserify": {
-    "transform": ["browserify-shim"]
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "browserify-shim": {
     "leaflet": "global:L"
