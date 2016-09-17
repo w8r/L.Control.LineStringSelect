@@ -7,14 +7,12 @@
  * @preserve
  */
 
-var L = global.L || require('leaflet');
+var L = (typeof window !== "undefined" ? window['L'] : typeof global !== "undefined" ? global['L'] : null);
 
 L.Control.LineStringSelect = module.exports = require('./src/select');
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/select":5,"leaflet":undefined}],2:[function(require,module,exports){
-"use strict";
-
+},{"./src/select":5}],2:[function(require,module,exports){
 var Marker = require('./marker');
 
 /**
@@ -73,8 +71,6 @@ var Endpoint = Marker.extend( /** @lends Endpoint.prototype */ {
 module.exports = Endpoint;
 
 },{"./marker":4}],3:[function(require,module,exports){
-"use strict";
-
 /**
  * Squared distance
  * @param  {Array.<Number>} a
@@ -170,17 +166,15 @@ function pointOnSegment(start, end, m, length) {
 }
 
 module.exports = {
-  pointSegmentDistance: pointLineSegmentDistance,
+  pointSegmentDistance:  pointLineSegmentDistance,
   closestPointOnSegment: closestPointOnSegment,
-  pointOnSegment: pointOnSegment,
-  distance: euclidianDistance
+  pointOnSegment:        pointOnSegment,
+  distance:              euclidianDistance
 };
 
 },{}],4:[function(require,module,exports){
 (function (global){
-"use strict";
-
-var L = global.L || require('leaflet');
+var L = (typeof window !== "undefined" ? window['L'] : typeof global !== "undefined" ? global['L'] : null);
 
 /**
  * Vector circle marker class with additional hide/show methods
@@ -213,11 +207,9 @@ var Marker = L.CircleMarker.extend( /** @lends Marker.prototype */ {
 module.exports = Marker;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"leaflet":undefined}],5:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (global){
-"use strict";
-
-var L = global.L || require('leaflet');
+var L = (typeof window !== "undefined" ? window['L'] : typeof global !== "undefined" ? global['L'] : null);
 var geometry = require('./geometry');
 var ControlMarker = require('./marker');
 var Endpoint = require('./endpoint');
@@ -459,7 +451,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     this.reset();
 
     if (startM < 0 || endM < 0) {
-      throw new Error("Can't use negative meter values for distance selection");
+      throw new Error('Can\'t use negative meter values for distance selection');
     }
 
     var start = this._pointAtM(startM);
@@ -560,9 +552,9 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
   _pointAtM: function(m) {
     var coords = this._feature.geometry.coordinates;
     var dist = 0;
-    var point;
+    var point, i, len;
 
-    for (var i = 1, len = coords.length; i < len; i++) {
+    for (i = 1, len = coords.length; i < len; i++) {
       var segmentLength = this._distance(coords[i - 1], coords[i]);
       if (dist + segmentLength <= m) {
         dist += segmentLength;
@@ -631,6 +623,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    */
   _onLayerClick: function(evt) {
     var coords = this._getNearestPoint(evt.latlng);
+    console.log(coords, evt.latlng);
     if (coords) {
       this._setPoint(L.latLng(coords), coords.start, coords.end);
     } else {
@@ -650,7 +643,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       if (this.options.useTouch) { // no mousemove, try and moving morker here
         var nearest = this._getNearestPoint(evt.latlng);
         if (nearest) {
-          coords = L.latLng(nearest)
+          coords = L.latLng(nearest);
           this._movingMarker.setLatLng(coords);
         }
       }
@@ -711,10 +704,10 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     var tx = this._tolerance.lng,
       ty = this._tolerance.lat;
 
-    return [
-      [latlng.lat - ty, latlng.lng - tx],
-      [latlng.lat + ty, latlng.lng + tx]
-    ];
+    return  {
+      minY: latlng.lat - ty, minX: latlng.lng - tx,
+      maxY: latlng.lat + ty, maxX: latlng.lng + tx
+    };
   },
 
   /**
@@ -875,7 +868,6 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    */
   _getNearestPoint: function(latlng, tolerance) {
     var coords = this._getPointerBounds(latlng, tolerance);
-    var map = this._map;
 
     ////// visual debug
     // if (!this._m) {
@@ -889,22 +881,19 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     // }
     ////// visual debug
 
-    var boxes = this._tree.search(
-      this._toTreeNode(coords[0].reverse(), coords[1].reverse())
-    );
+    var boxes = this._tree.search(coords);
 
     if (boxes.length !== 0) {
       var fcoords = this._feature.geometry.coordinates;
-      var d = Number.MAX_VALUE;
+      var d   = Number.MAX_VALUE;
       var pos = [latlng.lng, latlng.lat];
       var startIndex = boxes[0].start;
-      var endIndex = boxes[0].end;
+      var endIndex   = boxes[0].end;
       var start = fcoords[startIndex];
-      var end = fcoords[endIndex];
+      var end   = fcoords[endIndex];
 
       if (boxes.length > 1) { // avoid distance calculation
         for (var i = 0, len = boxes.length; i < len; i++) {
-          var box = boxes[i];
           var A = fcoords[boxes[i].start];
           var B = fcoords[boxes[i].end];
           var dist = geometry.pointSegmentDistance(pos, A, B);
@@ -922,7 +911,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       pos = geometry.closestPointOnSegment(pos, start, end);
       pos = [pos[1], pos[0]];
       pos.start = startIndex;
-      pos.end = endIndex;
+      pos.end   = endIndex;
 
       return pos;
     } else {
@@ -940,7 +929,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     if (this._tree) {
       this._tree.clear();
     } else {
-      this._tree = rbush();
+      this._tree = rbush(9, ['[0]', '[1]', '[2]', '[3]']);
     }
 
     for (var i = 1, len = coords.length; i < len; i++) {
@@ -983,11 +972,9 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 module.exports = Select;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./endpoint":2,"./geometry":3,"./marker":4,"./selection":6,"leaflet":undefined,"rbush":undefined}],6:[function(require,module,exports){
+},{"./endpoint":2,"./geometry":3,"./marker":4,"./selection":6,"rbush":undefined}],6:[function(require,module,exports){
 (function (global){
-"use strict";
-
-var L = global.L || require('leaflet');
+var L = (typeof window !== "undefined" ? window['L'] : typeof global !== "undefined" ? global['L'] : null);
 
 /**
  * Selection polyline
@@ -1037,5 +1024,5 @@ var Selection = L.Polyline.extend( /** @lends Selection.prototype */ {
 module.exports = Selection;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"leaflet":undefined}]},{},[1])(1)
+},{}]},{},[1])(1)
 });

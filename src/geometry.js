@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * Squared distance
  * @param  {Array.<Number>} a
@@ -95,8 +93,8 @@ function pointOnSegment(start, end, m, length) {
 }
 
 module.exports = {
-  pointSegmentDistance: pointLineSegmentDistance,
+  pointSegmentDistance:  pointLineSegmentDistance,
   closestPointOnSegment: closestPointOnSegment,
-  pointOnSegment: pointOnSegment,
-  distance: euclidianDistance
+  pointOnSegment:        pointOnSegment,
+  distance:              euclidianDistance
 };

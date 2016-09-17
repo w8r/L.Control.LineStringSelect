@@ -5,6 +5,6 @@
  * @preserve
  */
 
-var L = global.L || require('leaflet');
+var L = require('leaflet');
 
 L.Control.LineStringSelect = module.exports = require('./src/select');
