@@ -33,14 +33,16 @@ var Selection = L.Polyline.extend( /** @lends Selection.prototype */ {
    * @param  {Number} end
    */
   updatePathFromSource: function(start, end) {
-    this._originalPoints = this._source._originalPoints.slice(start, end + 1);
-    this._originalPoints.unshift(
+    var sourcePoints = this._source._rings[0];
+    var originalPoints = sourcePoints.slice(start, end + 1);
+    originalPoints.unshift(
       this._map.latLngToLayerPoint(this._latlngs[0])
     );
-    this._originalPoints.push(
+    originalPoints.push(
       this._map.latLngToLayerPoint(this._latlngs[this._latlngs.length - 1])
     );
-    this._updatePath();
+    this._rings[0] = originalPoints;
+    this._update();
   }
 
 });
