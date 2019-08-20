@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g=(g.L||(g.L = {}));g=(g.Control||(g.Control = {}));g.LineStringSelect = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g=(g.L||(g.L = {}));g=(g.Control||(g.Control = {}));g.LineStringSelect = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 /**
  * Leaflet LineString selection control
@@ -214,7 +214,9 @@ var geometry = require('./geometry');
 var ControlMarker = require('./marker');
 var Endpoint = require('./endpoint');
 var Selection = require('./selection');
-var rbush = global.rbush || require('rbush');
+var Rbush = global.Rbush || require('rbush');
+
+var START = L.Browser.touch ? 'touchstart mousedown' : 'mousedown';
 
 /**
  * LineString select control
@@ -223,8 +225,6 @@ var rbush = global.rbush || require('rbush');
  * @extends {L.Control}
  */
 var Select = L.Control.extend( /**  @lends Select.prototype */ {
-
-  includes: L.Mixin.Events,
 
   statics: {
     Selection: Selection,
@@ -241,7 +241,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     movingMarkerClass: 'select-marker select-moving-marker',
     name: 'leaflet-linestring-select',
     lineWeight: 4,
-    lineTolerance: L.Browser.touch ? 10 : 5,
+    lineTolerance: L.Browser.mobile ? 10 : 5,
 
     // moving(sliding) marker
     movingMarkerStyle: {
@@ -265,7 +265,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       opacity: 1
     },
 
-    useTouch: L.Browser.touch,
+    useTouch: L.Browser.mobile,
 
     position: 'topright' // chose your own if you want
   },
@@ -358,7 +358,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
     this._map.on('moveend zoomend resize', this._calculatePointerTolerance, this)
       .on('mousemove touchmove', this._onMousemove, this)
-      .on(L.Draggable.START.join(' '), this._onMouseDown, this)
+      .on(START, this._onMouseDown, this)
       .on('click contextmenu', this._onMapClick, this);
 
     this._calculatePointerTolerance();
@@ -380,7 +380,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
     this._map.off('moveend zoomend resize', this._calculatePointerTolerance, this)
       .off('mousemove touchmove', this._onMousemove, this)
-      .off(L.Draggable.START.join(' '), this._onMouseDown, this)
+      .off(START, this._onMouseDown, this)
       .off('click contextmenu', this._onMapClick, this);
 
     this._feature = null;
@@ -411,7 +411,8 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
     this._movingMarker.setLatLng(this._layer.getLatLngs()[0]);
     if (!this.options.useTouch) {
-      this._movingMarker.show();
+      //this._movingMarker.show();
+      this._map.addLayer(this._movingMarker);
     }
 
     this.fire('reset');
@@ -594,7 +595,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    * Control handles
    */
   _createHandles: function() {
-    var pos = L.latLng(this._layer._latlngs[0]);
+    var pos = L.latLng(this._layer.getLatLngs()[0]);
     var style = this.options.movingMarkerStyle;
 
     style.radius = this.options.lineTolerance;
@@ -604,7 +605,8 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     this._movingMarker.on('click', this._onMovingMarkerClick, this);
 
     if (this.options.useTouch) {
-      this._movingMarker.hide();
+      //this._movingMarker.hide();
+      this._map.removeLayer(this._movingMarker);
     }
   },
 
@@ -612,6 +614,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    * @param  {Object} evt
    */
   _onMovingMarkerClick: function(evt) {
+    L.DomEvent.stopPropagation(evt);
     this._setPoint(this._movingMarker.getLatLng(),
       this._movingMarker.start,
       this._movingMarker.end);
@@ -623,7 +626,6 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
    */
   _onLayerClick: function(evt) {
     var coords = this._getNearestPoint(evt.latlng);
-    console.log(coords, evt.latlng);
     if (coords) {
       this._setPoint(L.latLng(coords), coords.start, coords.end);
     } else {
@@ -640,7 +642,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       var pos = this._map.latLngToLayerPoint(evt.latlng);
       var coords = this._movingMarker.getLatLng();
 
-      if (this.options.useTouch) { // no mousemove, try and moving morker here
+      if (this.options.useTouch) { // no mousemove, try and move marker here
         var nearest = this._getNearestPoint(evt.latlng);
         if (nearest) {
           coords = L.latLng(nearest);
@@ -685,7 +687,8 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       this._endMarker.end = end;
 
       //this._map.off('mousemove', this._onMousemove, this);
-      this._movingMarker.hide();
+      //this._movingMarker.hide();
+      this._map.removeLayer(this._movingMarker);
       this.fire('select:end', {
         latlng: pos
       });
@@ -894,16 +897,17 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
 
       if (boxes.length > 1) { // avoid distance calculation
         for (var i = 0, len = boxes.length; i < len; i++) {
-          var A = fcoords[boxes[i].start];
-          var B = fcoords[boxes[i].end];
+          var box = boxes[i];
+          var A = fcoords[box.start];
+          var B = fcoords[box.end];
           var dist = geometry.pointSegmentDistance(pos, A, B);
 
           if (dist < d) {
             d = dist;
             start = A;
             end = B;
-            startIndex = boxes[i].start;
-            endIndex = boxes[i].end;
+            startIndex = box.start;
+            endIndex = box.end;
           }
         }
       }
@@ -929,7 +933,7 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
     if (this._tree) {
       this._tree.clear();
     } else {
-      this._tree = rbush(9, ['[0]', '[1]', '[2]', '[3]']);
+      this._tree = new Rbush(16);
     }
 
     for (var i = 1, len = coords.length; i < len; i++) {
@@ -964,10 +968,12 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       ymin = b[1];
     }
 
-    return [xmin, ymin, xmax, ymax];
+    return { minX: xmin, minY: ymin, maxX: xmax, maxY: ymax };
   }
 
 });
+
+L.Util.extend(Select.prototype, L.Evented.prototype);
 
 module.exports = Select;
 
@@ -1009,14 +1015,16 @@ var Selection = L.Polyline.extend( /** @lends Selection.prototype */ {
    * @param  {Number} end
    */
   updatePathFromSource: function(start, end) {
-    this._originalPoints = this._source._originalPoints.slice(start, end + 1);
-    this._originalPoints.unshift(
+    var sourcePoints = this._source._rings[0];
+    var originalPoints = sourcePoints.slice(start, end + 1);
+    originalPoints.unshift(
       this._map.latLngToLayerPoint(this._latlngs[0])
     );
-    this._originalPoints.push(
+    originalPoints.push(
       this._map.latLngToLayerPoint(this._latlngs[this._latlngs.length - 1])
     );
-    this._updatePath();
+    this._rings[0] = originalPoints;
+    this._update();
   }
 
 });

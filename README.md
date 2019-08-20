@@ -61,12 +61,17 @@ or
 
 See `/examples/app.js` for initialization and other things
 
+## Requirements
+
+ - `leaflet@>=1.x`
+ - `rbush@>=3.x`
+
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Alexander Milevski
+Copyright (c) 2019 Alexander Milevski
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

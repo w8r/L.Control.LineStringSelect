@@ -15,7 +15,7 @@ require('./L.TouchExtend');
 // }
 // console.log(JSON.stringify(coords));
 
-L.Icon.Default.imagePath = "http://cdn.leafletjs.com/leaflet-0.7/images";
+L.Icon.Default.imagePath = 'http://cdn.leafletjs.com/leaflet-0.7/images';
 
 ////////////////////////////////////////////////////////////////////////////////
 var map = global.map = new L.Map('map', {}).setView([22.42658, 114.1452], 11);
