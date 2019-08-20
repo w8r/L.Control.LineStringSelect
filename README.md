@@ -1,6 +1,6 @@
 # L.Control.LineStringSelect [![npm version](https://badge.fury.io/js/leaflet-linestring-select.svg)](https://badge.fury.io/js/leaflet-linestring-select) [![CircleCI](https://circleci.com/gh/w8r/L.Control.LineStringSelect.svg?style=shield)](https://circleci.com/gh/w8r/L.Control.LineStringSelect)
 
-![Screenshot](http://s16.postimg.org/c1f3efm1h/lss.jpg)
+![Screenshot](https://user-images.githubusercontent.com/26884/63355399-5912de00-c366-11e9-9fd9-445d68d4203c.png)
 
 LineString selection tool: you can select a part or a stretch of a polyline on the map. Performance-oriented, uses [rbush](https://github.com/mourner/rbush/) for segment lookup
 
