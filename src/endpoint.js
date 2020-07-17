@@ -22,7 +22,7 @@ var Endpoint = Marker.extend( /** @lends Endpoint.prototype */ {
   /**
    * @param  {L.Map} map
    */
-  onAdd: function(map) {
+  onAdd: function (map) {
     this.on('mouseover', this._onMouseOver, this)
       .on('mouseout', this._onMouseOut, this);
     Marker.prototype.onAdd.call(this, map);
@@ -31,7 +31,7 @@ var Endpoint = Marker.extend( /** @lends Endpoint.prototype */ {
   /**
    * @param  {L.Map} map
    */
-  onRemove: function(map) {
+  onRemove: function (map) {
     this.off('mouseover', this._onMouseOver, this)
       .off('mouseout', this._onMouseOut, this);
     Marker.prototype.onRemove.call(this, map);
@@ -40,14 +40,14 @@ var Endpoint = Marker.extend( /** @lends Endpoint.prototype */ {
   /**
    * Grow radius
    */
-  _onMouseOver: function() {
+  _onMouseOver: function () {
     this.setRadius(this.options.radius * this.options.radiusRatio);
   },
 
   /**
    * Set radius back
    */
-  _onMouseOut: function() {
+  _onMouseOut: function () {
     this.setRadius(this.options.radius / this.options.radiusRatio);
   }
 

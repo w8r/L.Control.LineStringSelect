@@ -1,10 +1,11 @@
 {
   "name": "leaflet-linestring-select",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "LineString selection tool",
-  "main": "index.js",
+  "main": "dist/L.Control.LineStringSelect.no-rbush.js",
+  "types": "dist/L.Control.LineStringSelect.d.ts",
   "scripts": {
-    "test": "browserify test/*.test.js | tap-closer | smokestack | tap-status",
+    "test": "tape test/*.test.js | tap-closer | tap-status",
     "start": "npm run watch-js & npm run watch-css & serve -p 3001",
     "lint": "eslint ./src/",
     "watch-css": "catw -c 'lessc -' 'src/*.less' -o dist/leaflet.lss.css -v",
@@ -55,6 +56,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "@types/geojson": "^7946.0.7",
     "leaflet": "^1.5.1",
     "rbush": "^3.0.1"
   }

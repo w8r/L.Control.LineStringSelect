@@ -10,6 +10,9 @@
 var L = (typeof window !== "undefined" ? window['L'] : typeof global !== "undefined" ? global['L'] : null);
 
 L.Control.LineStringSelect = module.exports = require('./src/select');
+L.control.lineStringSelect = function (options) {
+  return new L.Control.LineStringSelect(options);
+};
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./src/select":5}],2:[function(require,module,exports){
@@ -37,7 +40,7 @@ var Endpoint = Marker.extend( /** @lends Endpoint.prototype */ {
   /**
    * @param  {L.Map} map
    */
-  onAdd: function(map) {
+  onAdd: function (map) {
     this.on('mouseover', this._onMouseOver, this)
       .on('mouseout', this._onMouseOut, this);
     Marker.prototype.onAdd.call(this, map);
@@ -46,7 +49,7 @@ var Endpoint = Marker.extend( /** @lends Endpoint.prototype */ {
   /**
    * @param  {L.Map} map
    */
-  onRemove: function(map) {
+  onRemove: function (map) {
     this.off('mouseover', this._onMouseOver, this)
       .off('mouseout', this._onMouseOut, this);
     Marker.prototype.onRemove.call(this, map);
@@ -55,14 +58,14 @@ var Endpoint = Marker.extend( /** @lends Endpoint.prototype */ {
   /**
    * Grow radius
    */
-  _onMouseOver: function() {
+  _onMouseOver: function () {
     this.setRadius(this.options.radius * this.options.radiusRatio);
   },
 
   /**
    * Set radius back
    */
-  _onMouseOut: function() {
+  _onMouseOut: function () {
     this.setRadius(this.options.radius / this.options.radiusRatio);
   }
 
@@ -182,13 +185,13 @@ var L = (typeof window !== "undefined" ? window['L'] : typeof global !== "undefi
  * @class  Marker
  * @extends {L.CircleMarker}
  */
-var Marker = L.CircleMarker.extend( /** @lends Marker.prototype */ {
+module.exports = L.CircleMarker.extend( /** @lends Marker.prototype */ {
 
   /**
    * Show marker
    * @return {Marker}
    */
-  show: function() {
+  show: function () {
     this._container.style.visibility = '';
     return this;
   },
@@ -197,14 +200,12 @@ var Marker = L.CircleMarker.extend( /** @lends Marker.prototype */ {
    * Hide marker
    * @return {Marker}
    */
-  hide: function() {
+  hide: function () {
     this._container.style.visibility = 'hidden';
     return this;
   }
 
 });
-
-module.exports = Marker;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],5:[function(require,module,exports){
