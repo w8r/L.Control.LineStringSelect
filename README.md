@@ -10,6 +10,22 @@ Look how this thing deals with a coastline polyline consisting of ~500 points
 
 [demo](https://w8r.github.io/L.Control.LineStringSelect)
 
+## Options
+
+| Option | type | default value |
+| - | - | - |
+| `startMarkerClass` | `string` | 'select-marker select-start-marker' |
+| `endMarkerClass` | `string` | 'select-marker select-end-marker' |
+| `movingMarkerClass` | `string` | 'select-marker select-moving-marker' |
+| `name` | `string` | 'leaflet-linestring-select' |
+| `lineWeight` | `number` | 4 |
+| `lineTolerance` | `number` | `L.Browser.mobile ? 10 : 5` |
+| `movingMarkerStyle` | [`L.CircleMarcerOptions`](https://leafletjs.com/reference-1.6.0.html#circlemarker-option) | <code>{<br>&nbsp;&nbsp;fillColor: '#fff',<br>&nbsp;&nbsp;fillOpacity: 1,<br>&nbsp;&nbsp;weight: 2,<br>&nbsp;&nbsp;opacity: 0.5,<br>&nbsp;&nbsp;color: '#000'<br>}</code> |
+| `endpointStyle` | [`L.CircleMarcerOptions`](https://leafletjs.com/reference-1.6.0.html#circlemarker-option) | <code>{<br>&nbsp;&nbsp;radius: 5,<br>&nbsp;&nbsp;color: '#111',<br>&nbsp;&nbsp;fillColor: '#fff',<br>&nbsp;&nbsp;fillOpacity: 1<br>}</code> |
+| `selectionStyle` | [`L.PolylineOptions`](https://leafletjs.com/reference-1.6.0.html#polyline-option) | <code>{<br>&nbsp;&nbsp;color: '#0ff',<br>&nbsp;&nbsp;opacity: 1<br>}<code> |
+| `useTouch` | `boolean` | `L.Browser.mobile` |
+| `position` | `'topright'|'topleft'|'bottomleft'|'bottomright'` | `'topright'` |
+
 ## API
 
 `.enable({layer: polyline, feature: feature})`

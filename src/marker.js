@@ -6,13 +6,13 @@ var L = require('leaflet');
  * @class  Marker
  * @extends {L.CircleMarker}
  */
-var Marker = L.CircleMarker.extend( /** @lends Marker.prototype */ {
+module.exports = L.CircleMarker.extend( /** @lends Marker.prototype */ {
 
   /**
    * Show marker
    * @return {Marker}
    */
-  show: function() {
+  show: function () {
     this._container.style.visibility = '';
     return this;
   },
@@ -21,11 +21,9 @@ var Marker = L.CircleMarker.extend( /** @lends Marker.prototype */ {
    * Hide marker
    * @return {Marker}
    */
-  hide: function() {
+  hide: function () {
     this._container.style.visibility = 'hidden';
     return this;
   }
 
 });
-
-module.exports = Marker;
