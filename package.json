@@ -1,6 +1,6 @@
 {
   "name": "leaflet-linestring-select",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "LineString selection tool",
   "main": "dist/L.Control.LineStringSelect.no-rbush.js",
   "types": "dist/L.Control.LineStringSelect.d.ts",
