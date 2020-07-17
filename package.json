@@ -5,7 +5,7 @@
   "main": "dist/L.Control.LineStringSelect.no-rbush.js",
   "types": "dist/L.Control.LineStringSelect.d.ts",
   "scripts": {
-    "test": "browserify test/*.test.js | tap-closer | smokestack | tap-status",
+    "test": "tape test/*.test.js | tap-closer | tap-status",
     "start": "npm run watch-js & npm run watch-css & serve -p 3001",
     "lint": "eslint ./src/",
     "watch-css": "catw -c 'lessc -' 'src/*.less' -o dist/leaflet.lss.css -v",
