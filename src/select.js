@@ -198,7 +198,10 @@ var Select = L.Control.extend( /**  @lends Select.prototype */ {
       this._selection = null;
     }
 
-    this._movingMarker.setLatLng(this._layer.getLatLngs()[0]);
+    if (this._movingMarker) {
+      this._movingMarker.setLatLng(this._layer.getLatLngs()[0]);
+    }
+
     if (!this.options.useTouch) {
       //this._movingMarker.show();
       this._map.addLayer(this._movingMarker);
